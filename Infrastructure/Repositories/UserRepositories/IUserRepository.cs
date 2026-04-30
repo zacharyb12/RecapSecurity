@@ -24,5 +24,7 @@ namespace Infrastructure.Repositories.UserRepositories
 
         // GetAll
         Task<IEnumerable<User>> GetAllAsync();
+
+        Task<bool> UpdatePassword(int id, string hashedPassword);
     }
 }

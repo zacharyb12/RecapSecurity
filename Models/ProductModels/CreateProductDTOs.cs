@@ -8,6 +8,9 @@ namespace Models.ProductModels
     public class CreateProductDTOs
     {
         [Required]
+        public int UserId { get; set; }
+
+        [Required]
         [MinLength(2)]
         [MaxLength(50)]
         public string Name { get; set; }

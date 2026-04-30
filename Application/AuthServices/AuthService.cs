@@ -62,5 +62,23 @@ namespace Application.AuthServices
 
             return token;
         }
+
+        public async Task<bool> UpdatePassword(UpdatePasswordRequest request)
+        {
+            //verifier l'ancien mdp
+            User? u = await _repository.GetByIdAsync(request.Id);
+
+            if(u == null || !BCrypt.Net.BCrypt.Verify(request.OldPassword,u.Password))
+            {
+                throw new UnauthorizedAccessException("Identifiants invalides");
+            }
+
+            // hasher le nouveau mot de passe 
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+
+            // envoyer le tout au repository
+            return await _repository.UpdatePassword(request.Id,hashedPassword);
+        }
     }
 }

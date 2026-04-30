@@ -1,12 +1,14 @@
 ﻿using Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Models.AuthModels;
 
 namespace RecapSecurity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("RateLimiteHundred")]
     public class AuthController(IAuthService _service) : ControllerBase
     {
         [HttpPost("register")]
@@ -44,10 +46,31 @@ namespace RecapSecurity.Controllers
         }
 
 
-        // Update Password
-        // demande l'ancien et le nouveau password
-        // Repository : Mise à jour du mot de passe
-        // Service : appel de la Mise à jour du mot de passe repository
+        [HttpPut("updatepassword")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordRequest request)
+        {
+            try
+            {
+                bool result = await _service.UpdatePassword(request);
+
+                if(result)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest("L'opération n'as pas pu être executée");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return BadRequest("Les informations sont incorrectes");
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest("Une erreur est survenue veuillez réessayer !");
+            }
 
     }
+}
 }

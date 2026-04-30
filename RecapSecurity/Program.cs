@@ -7,10 +7,12 @@ using Infrastructure.Data;
 using Infrastructure.Repositories.ProductRepositories;
 using Infrastructure.Repositories.UserRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Models.Jwt;
 using Scalar.AspNetCore;
+using System.Threading.RateLimiting;
 
 
 namespace RecapSecurity
@@ -44,10 +46,8 @@ namespace RecapSecurity
                     builder.Configuration.GetSection("JwtSettings")
                 );
 
-            // configuration du token
+            // configuration du token ----------------------------------------------------------------------------
             JwtSettings jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()!;
-
-
 
             builder.Services.AddAuthentication(options =>
                 {
@@ -80,8 +80,45 @@ namespace RecapSecurity
                 };
             }
             );
-
             builder.Services.AddAuthorization();
+
+
+            // CORS ----------------------------------------------------------------------------
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy" , policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                }
+                );
+
+            }
+            );
+
+
+            // RateLimit ----------------------------------------------------------------------------
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("RateLimiteHundred", options =>
+                {
+                    options.PermitLimit = 100;
+                    options.Window = TimeSpan.FromMinutes(1);
+                    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    options.QueueLimit = 5;
+
+                }
+                );
+
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            }
+            );
+
+
 
             var app = builder.Build();
 
@@ -96,6 +133,9 @@ namespace RecapSecurity
 
             app.UseHttpsRedirection();
 
+            app.UseRateLimiter();
+
+            app.UseCors("MyPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

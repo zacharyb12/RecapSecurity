@@ -9,5 +9,7 @@ namespace Application.Interfaces
     {
         Task<string> Register(RegisterRequest registerForm);
         Task<string> Login(LoginRequest LoginForm);
+
+        Task<bool> UpdatePassword(UpdatePasswordRequest request);
     }
 }

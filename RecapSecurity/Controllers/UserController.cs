@@ -36,9 +36,30 @@ namespace RecapSecurity.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetById(int id)
+        {
+            try
+            {
+
+                UserDTOs? u = await _service.GetByIdAsync(id);
+
+                if(u == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(u);
+
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         /*
 
-        // GetById
 
         // Update
 

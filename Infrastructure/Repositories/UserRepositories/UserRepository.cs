@@ -65,5 +65,21 @@ namespace Infrastructure.Repositories.UserRepositories
 
             return rowsEffected > 0;
         }
+
+        public async Task<bool> UpdatePassword(int id , string hashedPassword)
+        {
+            User? u = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+            if( u == null )
+            {
+                return false;
+            }
+
+            u.Password = hashedPassword;
+
+            int rowsAffected = await _context.SaveChangesAsync();
+
+            return rowsAffected > 0;
+        }
     }
 }

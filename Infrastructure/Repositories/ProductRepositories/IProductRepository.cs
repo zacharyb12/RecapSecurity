@@ -13,7 +13,7 @@ namespace Infrastructure.Repositories.ProductRepositories
         Task<Product?> GetByIdAsync(int id);
 
         // Create
-        Task<Product> CreateAsync(Product newProduct);
+        Task<bool> CreateAsync(Product newProduct);
 
         // Update
         Task<bool> UpdateAsync(Product updatedProduct);
