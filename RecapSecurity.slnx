@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Application/Application.csproj" Id="1188834c-8d64-4ace-8344-f5101b66c76d" />
+  <Project Path="Infrastructure/Infrastructure.csproj" Id="7d398b4f-699f-482e-af35-be218999f253" />
+  <Project Path="Models/Models.csproj" Id="1cc39ea4-1d2b-4b4a-b3bd-068ddb523a54" />
+  <Project Path="RecapSecurity/RecapSecurity.csproj" />
+</Solution>
