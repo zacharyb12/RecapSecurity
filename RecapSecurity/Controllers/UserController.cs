@@ -13,6 +13,7 @@ namespace RecapSecurity.Controllers
 
         // verbe utilisé
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         // réponses prévu par la route
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -37,6 +38,7 @@ namespace RecapSecurity.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -62,6 +64,7 @@ namespace RecapSecurity.Controllers
 
 
         [HttpPut]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -85,6 +88,7 @@ namespace RecapSecurity.Controllers
         }
 
         [HttpDelete]
+        [Authorize]// role pour la suppression
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -108,7 +112,36 @@ namespace RecapSecurity.Controllers
             }
         }
 
+        //[HttpDelete("admin")]
+        //[Authorize]// role pour la suppression
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<IActionResult> DeleteUserAdmin(int id)
+        //{
+        //    try
+        //    {
+
+        //        bool result = await _service.DeleteAsync(id);
+
+        //        if (!result)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        return NoContent();
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest($"Une erreur est survenue : {ex.Message}");
+        //    }
+        //}
+
+
+
         [HttpPut("update-role")]
+        [Authorize(Roles ="Admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

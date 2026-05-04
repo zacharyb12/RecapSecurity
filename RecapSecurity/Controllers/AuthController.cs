@@ -1,4 +1,6 @@
 ﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -8,10 +10,12 @@ namespace RecapSecurity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableRateLimiting("RateLimiteHundred")]
+    //[EnableRateLimiting("RateLimiteHundred")]
+    //[EnableCors("secondPolicy")]
     public class AuthController(IAuthService _service) : ControllerBase
     {
         [HttpPost("register")]
+        // RateLimite
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterRequest registerForm)
@@ -30,6 +34,9 @@ namespace RecapSecurity.Controllers
         }
 
         [HttpPost("login")]
+        // RateLimite
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login(LoginRequest loginForm)
         {
             try
@@ -47,6 +54,8 @@ namespace RecapSecurity.Controllers
 
 
         [HttpPut("updatepassword")]
+        [Authorize] // doit être authentifier
+        // rate Limite
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordRequest request)

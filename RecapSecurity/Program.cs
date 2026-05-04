@@ -96,6 +96,15 @@ namespace RecapSecurity
                 }
                 );
 
+                options.AddPolicy("secondPolicy", policy =>
+                {
+                    policy.WithOrigins("http://www.monSite.com")
+                          .WithMethods("GET")
+                          .AllowAnyHeader();
+                          
+                }
+);
+
             }
             );
 
@@ -106,13 +115,31 @@ namespace RecapSecurity
             {
                 options.AddFixedWindowLimiter("RateLimiteHundred", options =>
                 {
-                    options.PermitLimit = 10;
+                    // nombre de requettes pour un delai
+                    options.PermitLimit = 1;
+                    // le delai
                     options.Window = TimeSpan.FromMinutes(1);
+                    // ordre de traitement de la file d'attente
                     options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    // Taille de la file 
                     options.QueueLimit = 0;
 
                 }
                 );
+
+                options.AddFixedWindowLimiter("RateLimite2", options =>
+                {
+                    // nombre de requettes pour un delai
+                    options.PermitLimit = 5;
+                    // le delai
+                    options.Window = TimeSpan.FromMinutes(1);
+                    // ordre de traitement de la file d'attente
+                    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    // Taille de la file 
+                    options.QueueLimit = 3;
+
+                }
+);
 
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             }

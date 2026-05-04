@@ -93,6 +93,7 @@ namespace RecapSecurity.Controllers
 
         // Create : Post
         [HttpPost]
+        [Authorize(Roles ="Vendor,Admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -119,6 +120,7 @@ namespace RecapSecurity.Controllers
 
         // Update : Put
         [HttpPut]
+        [Authorize(Roles = "Vendor,Admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -144,6 +146,7 @@ namespace RecapSecurity.Controllers
 
         // Delete : Delete
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Vendor,Admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
