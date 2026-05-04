@@ -11,9 +11,11 @@ namespace Application.UserServices
 
         Task<UserDTOs?> GetByIdAsync(int id);
 
-        Task<bool> UpdateAsync(User updatedUser);
+        Task<bool> UpdateAsync(UserDTOs updatedUser);
 
         Task<bool> DeleteAsync(int id);
+
+        Task<bool> UpdateRole(int id, string role);
 
     }
 }

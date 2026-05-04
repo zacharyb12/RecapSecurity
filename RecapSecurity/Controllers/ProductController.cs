@@ -10,36 +10,18 @@ namespace RecapSecurity.Controllers
     [ApiController]
     public class ProductController(IProductService _service) : ControllerBase
     {
-           public static List<Product> datas = new List<Product>()
-            {
-                new Product
-                {
-                    Id = 1,
-                    Name = "product 1",
-                    Description = "description 1",
-                    Price = 15.89,
-                    ImageUrl = "image 1"
-                },
-                new Product
-                {
-                    Id = 2,
-                    Name = "product 2",
-                    Description = "description 2",
-                    Price = 158.9,
-                    ImageUrl = "image 2"
-                }
-            };
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<Product>> GetProducts()
+        public async Task<ActionResult<IEnumerable<ProductLightDTOs>>> GetProducts()
         {
 
             try
             {
-                // Appel du service
+
+                IEnumerable<ProductLightDTOs> datas = await _service.GetAllAsync();
 
                 if (datas.Count() < 1)
                 {
@@ -58,18 +40,42 @@ namespace RecapSecurity.Controllers
             }
         }
 
+        [HttpGet("byUser")]
+        public async Task<IActionResult> GetAllByUser(int id)
+        {
+            try
+            {
+                IEnumerable<ProductLightDTOs> datas = await _service.GetAllByUserIdAsync(id);
+
+                if(datas.Count() < 1)
+                {
+                    throw new NullReferenceException("Aucune données à afficher");
+                }
+                return Ok(datas);
+
+            }
+            catch (NullReferenceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Une erreur est survenue : {ex.Message}");
+            }
+        }
+
         // GetById : Get
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Product> GetById(int id)
+        public async Task<ActionResult> GetById(int id)
         {
 
             try
             {
                 // Appel du service
-                Product? p = datas.FirstOrDefault(p => p.Id == id);
+                ProductLightDTOs? p = await _service.GetByIdAsync(id);
                 
                 if(p == null)
                 {
@@ -96,9 +102,9 @@ namespace RecapSecurity.Controllers
             try
             {
                 // Appel du service
-                Product? productAdded = datas.FirstOrDefault(p => p.Name == newProduct.Name);
+                bool result = await _service.CreateAsync(newProduct);
 
-                if(productAdded == null)
+                if(!result)
                 {
                     return NotFound("Le produit n'as pas pu être crée !");
                 }
@@ -116,13 +122,17 @@ namespace RecapSecurity.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> Update(Product updatedProduct)
+        public async Task<ActionResult> Update(UpdateProductDtos updatedProduct)
         {
 
             try
             {
 
-                // Appel du service
+                bool result = await _service.UpdateAsync(updatedProduct);
+                if(!result)
+                {
+                    return NotFound();
+                }
 
                 return NoContent();
             
@@ -142,14 +152,11 @@ namespace RecapSecurity.Controllers
             try
             {
                 // Appel du service
-                Product? productToDelete = datas.FirstOrDefault(p => p.Id == id); // recuperation lié à la liste
-                
-                if(productToDelete == null)
+                bool result = await _service.DeleteAsync(id);
+                if(!result)
                 {
                     return NotFound();
                 }
-
-                datas.Remove(productToDelete); // suppression lié à la liste
 
                 return NoContent();
 

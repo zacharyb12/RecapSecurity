@@ -106,10 +106,10 @@ namespace RecapSecurity
             {
                 options.AddFixedWindowLimiter("RateLimiteHundred", options =>
                 {
-                    options.PermitLimit = 100;
+                    options.PermitLimit = 10;
                     options.Window = TimeSpan.FromMinutes(1);
                     options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                    options.QueueLimit = 5;
+                    options.QueueLimit = 0;
 
                 }
                 );
@@ -131,9 +131,10 @@ namespace RecapSecurity
                 app.MapScalarApiReference();
             }
 
+            app.UseRateLimiter();
+
             app.UseHttpsRedirection();
 
-            app.UseRateLimiter();
 
             app.UseCors("MyPolicy");
 

@@ -42,13 +42,27 @@ namespace Application.UserServices
 
         }
 
-        public Task<bool> UpdateAsync(User updatedUser)
+        public Task<bool> UpdateAsync(UserDTOs updatedUser)
         {
-            throw new NotImplementedException();
+            User u = new()
+            {
+                Id = updatedUser.Id,
+                Email = updatedUser.Email,
+                Firstname = updatedUser.Firstname,
+                Lastname = updatedUser.Lastname,
+
+            };
+
+            return _repository.UpdateAsync(u);
         }
         public Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            return _repository.DeleteAsync(id);
+        }
+
+        public async Task<bool> UpdateRole(int id ,string role)
+        {
+            return await _repository.UpdateRole(id,role);
         }
     }
 }

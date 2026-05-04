@@ -81,5 +81,21 @@ namespace Infrastructure.Repositories.UserRepositories
 
             return rowsAffected > 0;
         }
+
+        public async Task<bool> UpdateRole(int id , string role)
+        {
+            User? u = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+            if(u == null)
+            {
+                return false;
+            }
+
+            u.Role = role;
+
+            int rowsAffected = await _context.SaveChangesAsync();
+
+            return rowsAffected > 0;
+        }
     }
 }

@@ -36,7 +36,10 @@ namespace RecapSecurity.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> GetById(int id)
         {
             try
@@ -58,15 +61,73 @@ namespace RecapSecurity.Controllers
         }
 
 
-        /*
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateUser(UserDTOs userUpdated)
+        {
+            try
+            {
+                bool result = await _service.UpdateAsync(userUpdated);
 
+                if(!result)
+                {
+                    return NotFound();
+                }
 
-        // Update
+                return NoContent();
 
-        // Delete
+            }catch(Exception ex)
+            {
+                return BadRequest($"Une erreur est survenue : {ex.Message}");
+            }
+        }
 
-        // Update Role
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
 
-         */
+                bool result = await _service.DeleteAsync(id);
+
+                if(!result)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+
+            }catch(Exception ex)
+            {
+                return BadRequest($"Une erreur est survenue : {ex.Message}");
+            }
+        }
+
+        [HttpPut("update-role")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateRole(int id, string role)
+        {
+            try
+            {
+                bool result = await _service.UpdateRole(id,role);
+                if(!result)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+
+            }catch(Exception ex)
+            {
+                return BadRequest($"Une erreur est survenue : {ex.Message}");
+            }
+        }
     }
 }
